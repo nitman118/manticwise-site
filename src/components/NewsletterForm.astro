@@ -1,0 +1,18 @@
+---
+import { site } from '../site.config';
+
+const open = site.buttondownUsername !== '';
+const action = open
+  ? `https://buttondown.com/api/emails/embed-subscribe/${encodeURIComponent(site.buttondownUsername)}`
+  : undefined;
+---
+
+<form action={action} method="post">
+  <label for="email">Email</label>
+  <div class="field-row">
+    <input id="email" name="email" type="email" autocomplete="email" required disabled={!open} />
+    <button class="button" type="submit" disabled={!open}>Subscribe</button>
+  </div>
+  {!open && <p class="small muted form-note">Sign-up opens soon.</p>}
+  <p class="small muted consent">How we use your email: <a href="/privacy/">Privacy</a></p>
+</form>

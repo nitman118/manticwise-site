@@ -1,0 +1,22 @@
+---
+import { site, siteName } from '../site.config';
+
+interface Props {
+  /** Set on pages that show the AI-generated art. */
+  imageCredit?: boolean;
+}
+const { imageCredit = false } = Astro.props;
+const onPrivacy = Astro.url.pathname.startsWith('/privacy');
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="wrap">
+    <ul class="inline-list">
+      <li><a href="/privacy/" aria-current={onPrivacy ? 'page' : undefined}>Privacy</a></li>
+      {site.contactEmail && <li>Contact: <a href={`mailto:${site.contactEmail}`}>{site.contactEmail}</a></li>}
+      <li>© {year} {siteName}</li>
+      {imageCredit && <li>Image: AI-generated (Higgsfield)</li>}
+    </ul>
+  </div>
+</footer>

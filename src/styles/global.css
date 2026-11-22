@@ -1,0 +1,196 @@
+/* Manticwise site. Colours come from the --mw-* tokens only (tokens.css). No JS, no external requests.
+   Images are decorative CSS backgrounds (no <img>, no alt):
+   - Hero band: garnet art, identical in light and dark (it only uses the gradient tokens,
+     which are the same in both themes). Portrait image on phones, landscape from 40rem.
+   - Newsletter: embossed paper in light mode only. In dark mode the image is dropped and the
+     section is plain dark paper (see "Newsletter" below). */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--mw-paper);
+  color: var(--mw-ink);
+  font-family: var(--mw-font-sans);
+  font-size: var(--mw-text-body);
+  line-height: 1.6;
+  -webkit-text-size-adjust: 100%;
+}
+
+img { max-width: 100%; height: auto; display: block; }
+a { color: var(--mw-garnet-text); text-underline-offset: 0.18em; }
+a:hover { text-decoration-thickness: 2px; }
+:focus-visible { outline: 3px solid var(--mw-garnet-text); outline-offset: 2px; border-radius: var(--mw-radius-sm); }
+
+.wrap { max-width: var(--mw-width); margin: 0 auto; padding: 0 var(--mw-space-4); }
+@media (min-width: 48rem) { .wrap { padding: 0 var(--mw-space-6); } }
+
+.skip { position: absolute; left: var(--mw-space-4); top: -4rem; background: var(--mw-surface); color: var(--mw-ink); padding: var(--mw-space-2) var(--mw-space-3); border-radius: var(--mw-radius-md); }
+.skip:focus { top: var(--mw-space-2); }
+
+/* Type */
+.eyebrow { font-family: var(--mw-font-mono); font-size: 0.75rem; line-height: 1.3; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--mw-ink-muted); margin: 0 0 var(--mw-space-4); }
+h1, h2 { margin: 0 0 var(--mw-space-4); color: var(--mw-ink); font-weight: 700; }
+h1 { font-size: var(--mw-text-display); line-height: 1.06; letter-spacing: -0.03em; }
+h2 { font-size: var(--mw-text-h2); line-height: 1.2; letter-spacing: -0.02em; }
+p { margin: 0 0 var(--mw-space-4); max-width: var(--mw-measure); }
+.lead { font-family: var(--mw-font-serif); font-size: var(--mw-text-h3); line-height: 1.5; margin-bottom: var(--mw-space-6); }
+.muted { color: var(--mw-ink-muted); }
+.small { font-size: 0.875rem; line-height: 1.5; }
+
+/* Header */
+.site-header .wrap { display: flex; align-items: center; min-height: 4.5rem; }
+.logo { display: inline-block; padding: var(--mw-space-2) 0; }
+.logo img { width: 148px; }
+/* On the home page the header lies over the top of the hero band (reversed logo, both themes). */
+.site-header.on-band { position: absolute; top: 0; left: 0; right: 0; z-index: 2; }
+
+/* Sections: whitespace, no boxes */
+section { padding: var(--mw-space-8) 0; }
+@media (min-width: 48rem) { section { padding: var(--mw-space-9) 0; } }
+
+/* Hero band: full width, same in light and dark.
+   Base = the brand gradient (the images' ground matches it), so text stays readable if the
+   image fails to load. The art sits in ::before, behind the content; a CSS mask fades its edge
+   into the band (the black in a mask is its alpha, not a colour). Nothing is drawn over the art, so its one ember point shows at every width.
+   Paper text never lies on the pale hairlines: the art is either below the text (< 64rem),
+   or only its calm left part is behind it (64-75rem), or it is masked away there (>= 75rem).
+   --art-w = drawn width of the image. It has a floor, so the ember point never gets too small
+   to see; on narrow screens the image is cropped on the left instead (the point is right). */
+.hero {
+  --art-w: max(100vw, 32.5rem);
+  position: relative; overflow: hidden;
+  padding: calc(4.5rem + var(--mw-space-6)) 0 calc(var(--art-w) * 0.75);
+  color: var(--mw-on-gradient);
+  background: var(--mw-gradient-from);
+  background: var(--mw-gradient);
+}
+/* Phone: portrait image (2:3). Its lower half is the art, in the reserved space below the
+   text; its calm upper half runs up behind the text. */
+.hero::before {
+  content: ""; position: absolute; z-index: 0; left: 0; right: 0; bottom: 0;
+  height: min(100%, var(--art-w) * 1.5);
+  background: url("../assets/band-a-portrait.webp") no-repeat right bottom / var(--art-w) auto;
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 4%);
+  mask-image: linear-gradient(to bottom, transparent, #000 4%);
+}
+.hero > .wrap { position: relative; z-index: 1; }
+/* Tablet: the whole landscape image (21:9) below the text. The fade stops above the point
+   (15% down). */
+@media (min-width: 40rem) {
+  .hero {
+    --art-w: max(100vw, 68.75rem);
+    padding-bottom: calc(var(--art-w) * 0.42);
+    /* Base = the colours along the image's top edge, so the image joins the band unseen. */
+    background: linear-gradient(90deg, color-mix(in srgb, var(--mw-gradient-from) 76%, var(--mw-gradient-to)) 10%, var(--mw-gradient-to) 90%) right / var(--art-w) 100% no-repeat var(--mw-gradient-from);
+  }
+  .hero::before {
+    height: calc(var(--art-w) * 0.4286);
+    background-image: url("../assets/band-a.webp");
+    -webkit-mask-image: linear-gradient(to bottom, transparent, #000 6%);
+    mask-image: linear-gradient(to bottom, transparent, #000 6%);
+  }
+}
+/* Small laptop: the text overlaps the image's calm left part. */
+@media (min-width: 64rem) { .hero { padding-bottom: 22vw; } }
+/* Desktop: text left, art right, filling the band. The art is masked away under the text
+   block (--hero-x = its right edge: page margin + 36rem) with a short fade. The height cap
+   keeps "cover" from pushing the point into the fade. */
+@media (min-width: 75rem) {
+  .hero {
+    --hero-x: calc(max(0px, (100% - var(--mw-width)) / 2) + 36rem);
+    display: flex; align-items: center;
+    min-height: clamp(30rem, 70vh, 36rem);
+    --art-w: 100%;
+    padding-bottom: var(--mw-space-9);
+  }
+  .hero > .wrap { width: 100%; }
+  .hero::before {
+    top: 0; height: auto;
+    background-position: right top; background-size: cover;
+    -webkit-mask-image: linear-gradient(90deg, transparent calc(var(--hero-x) + 0.5rem), #000 calc(var(--hero-x) + 5rem));
+    mask-image: linear-gradient(90deg, transparent calc(var(--hero-x) + 0.5rem), #000 calc(var(--hero-x) + 5rem));
+  }
+}
+.hero-text { max-width: 34rem; }
+.hero h1, .hero .eyebrow, .hero .lead { color: var(--mw-on-gradient); }
+.hero .lead { max-width: 28rem; }
+/* Button on the band: paper fill, garnet text. Not ember: the image holds the one ember point. */
+.hero .button { background: var(--mw-on-gradient); border-color: var(--mw-on-gradient); color: var(--mw-gradient-from); }
+.hero .button:hover { background: color-mix(in srgb, var(--mw-on-gradient) 88%, var(--mw-gradient-to)); border-color: transparent; color: var(--mw-gradient-to); }
+.hero :focus-visible, .site-header.on-band :focus-visible { outline-color: var(--mw-on-gradient); }
+
+/* Section 2: text only, generous whitespace */
+.ppt { padding: var(--mw-space-9) 0 var(--mw-space-8); }
+@media (min-width: 48rem) { .ppt { padding: calc(var(--mw-space-9) + var(--mw-space-6)) 0 var(--mw-space-9); } }
+.ppt p:not(.small) { font-size: var(--mw-text-h3); line-height: 1.5; }
+
+/* Inline list with middle dots */
+/* Phone: one item per line (no dangling dots). Wider: one line with middle dots. */
+.inline-list { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--mw-space-2); }
+@media (min-width: 48rem) {
+  .inline-list { display: flex; flex-wrap: wrap; gap: var(--mw-space-2) 0; }
+  .inline-list li { white-space: nowrap; }
+  .inline-list li:not(:last-child)::after { content: "·"; padding: 0 var(--mw-space-3); color: var(--mw-ink-muted); }
+}
+section .inline-list { font-size: 1.1875rem; }
+
+/* Button: garnet, never ember */
+.button { display: inline-flex; align-items: center; justify-content: center; min-height: 2.75rem; padding: 0 var(--mw-space-5); border-radius: var(--mw-radius-md); border: 1px solid var(--mw-garnet); background: var(--mw-garnet); color: var(--mw-on-garnet); font: 600 0.9375rem/1.2 var(--mw-font-sans); text-decoration: none; cursor: pointer; transition: background-color 120ms ease-out; }
+.button:hover { background: var(--mw-garnet-strong); border-color: var(--mw-garnet-strong); }
+
+/* Newsletter. Light mode: embossed paper, very quiet, on the right. Paper-coloured layers
+   on top soften it, hide its edges and keep the text on near-plain paper.
+   Dark mode: the image is dropped (plain dark paper); embossed white paper has no dark version. */
+.newsletter {
+  background-color: var(--mw-paper);
+  background-image:
+    linear-gradient(180deg, var(--mw-paper), transparent 25%, transparent 75%, var(--mw-paper)),
+    linear-gradient(90deg, var(--mw-paper) 35%, color-mix(in srgb, var(--mw-paper) 35%, transparent) 75%),
+    url("../assets/paper-emboss.webp");
+  background-repeat: no-repeat;
+  background-position: right center;
+  background-size: cover;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .newsletter { background-image: none; }
+}
+[data-theme="dark"] .newsletter { background-image: none; }
+
+form { margin-top: var(--mw-space-6); }
+label { display: block; font-weight: 600; font-size: 0.9375rem; margin-bottom: var(--mw-space-2); }
+.field-row { display: flex; flex-wrap: wrap; gap: var(--mw-space-3); max-width: 32rem; }
+.field-row input { flex: 1 1 13rem; min-width: 0; min-height: 2.75rem; padding: 0 var(--mw-space-3); font: 400 var(--mw-text-body)/1.4 var(--mw-font-sans); color: var(--mw-ink); background: var(--mw-surface); border: 1px solid var(--mw-line-strong); border-radius: var(--mw-radius-md); }
+.field-row .button { flex: 0 0 auto; }
+.consent { margin: var(--mw-space-4) 0 0; }
+/* Sign-up not open yet: the form is shown, but switched off. */
+.field-row :disabled { opacity: 0.55; cursor: not-allowed; }
+.form-note { margin: var(--mw-space-3) 0 0; }
+
+/* Privacy, article and 404 pages */
+.page-head { padding-bottom: var(--mw-space-6); }
+.page-head h1 { font-size: clamp(2rem, 5vw, 3rem); }
+.page-body { padding-top: 0; }
+.page-body h2 { font-size: 1.5rem; margin-top: var(--mw-space-7); }
+.page-body h2:first-child { margin-top: 0; }
+.summary { margin: 0; display: grid; gap: var(--mw-space-3); max-width: 48rem; }
+.summary dt { font-family: var(--mw-font-mono); font-size: 0.75rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--mw-ink-muted); }
+.summary dd { margin: 0 0 var(--mw-space-2); }
+@media (min-width: 40rem) { .summary { grid-template-columns: 11rem 1fr; gap: var(--mw-space-3) var(--mw-space-5); } .summary dd { margin: 0; } }
+details { border-top: 1px solid var(--mw-line); padding: var(--mw-space-4) 0; max-width: var(--mw-measure); }
+details:last-of-type { border-bottom: 1px solid var(--mw-line); }
+summary { cursor: pointer; font-weight: 600; }
+summary:hover { color: var(--mw-garnet-text); }
+details[open] summary { margin-bottom: var(--mw-space-3); }
+details p:last-child, details ul:last-child { margin-bottom: 0; }
+details ul { padding-left: 1.25rem; margin: 0 0 var(--mw-space-4); }
+.prose { max-width: var(--mw-measure); }
+.prose img { border-radius: var(--mw-radius-md); margin: var(--mw-space-5) 0; }
+.cover { border-radius: var(--mw-radius-md); margin-bottom: var(--mw-space-6); }
+
+/* Footer */
+.site-footer { border-top: 1px solid var(--mw-line); padding: var(--mw-space-6) 0 var(--mw-space-7); font-size: 0.875rem; color: var(--mw-ink-muted); }
+.site-footer a { color: var(--mw-ink-muted); }
+.site-footer a:hover { color: var(--mw-garnet-text); }
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }

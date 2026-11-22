@@ -1,0 +1,68 @@
+---
+import interUrl from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
+import { site, siteName } from '../site.config';
+
+interface Props {
+  title: string;
+  /** At most 155 characters. */
+  description: string;
+  /** Shorter text for link previews. Defaults to the description. */
+  socialDescription?: string;
+  ogType?: 'website' | 'article';
+  /** Site-relative image for link previews (1200×630). */
+  image?: string;
+  /** Extra JSON-LD for this page (the Organization block is always added). */
+  jsonLd?: Record<string, unknown>;
+  /** Never index this page, whatever the launch state (404). */
+  noindex?: boolean;
+}
+
+const {
+  title,
+  description,
+  socialDescription = description,
+  ogType = 'website',
+  image = '/og.jpg',
+  jsonLd,
+  noindex = false,
+} = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, site.url).href;
+const imageUrl = new URL(image, site.url).href;
+const organization = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: siteName,
+  url: `${site.url}/`,
+  logo: `${site.url}/assets/m-lockup-onecolour.svg`,
+};
+---
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>{title}</title>
+<meta name="description" content={description} />
+{!Astro.url.pathname.startsWith("/404") && <link rel="canonical" href={canonical} />}
+<meta name="color-scheme" content="light dark" />
+{(!site.launched || noindex) && <meta name="robots" content="noindex" />}
+{site.launched && <link rel="sitemap" href="/sitemap-index.xml" />}
+<link rel="alternate" type="application/rss+xml" title={siteName} href="/rss.xml" />
+<meta property="og:type" content={ogType} />
+<meta property="og:site_name" content={siteName} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={socialDescription} />
+<meta property="og:url" content={canonical} />
+<meta property="og:locale" content="en_GB" />
+<meta property="og:image" content={imageUrl} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content={`${siteName}: data and AI, reasoned through`} />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={socialDescription} />
+<meta name="twitter:image" content={imageUrl} />
+<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+<link rel="preload" as="font" type="font/woff2" href={interUrl} crossorigin />
+<slot />
+<script type="application/ld+json" is:inline set:html={JSON.stringify(organization)} />
+{jsonLd && <script type="application/ld+json" is:inline set:html={JSON.stringify(jsonLd)} />}

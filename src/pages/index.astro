@@ -1,0 +1,59 @@
+---
+import Base from '../layouts/Base.astro';
+import NewsletterForm from '../components/NewsletterForm.astro';
+import bandA from '../assets/band-a.webp?url';
+import bandAPortrait from '../assets/band-a-portrait.webp?url';
+---
+
+<Base
+  title="Manticwise — Data and AI, reasoned through"
+  description="Manticwise teaches people and companies how to get started with data and AI: the people, the process and the technology."
+  socialDescription="First steps with data and AI, for people and companies."
+  onBand
+  imageCredit
+>
+  <Fragment slot="head">
+    <link rel="preload" as="image" href={bandA} type="image/webp" media="(min-width: 40rem)" />
+    <link rel="preload" as="image" href={bandAPortrait} type="image/webp" media="(max-width: 39.99rem)" />
+  </Fragment>
+
+  <!-- Hero band: the art is a decorative CSS background, so there is no <img>. -->
+  <section class="hero hero-a" aria-labelledby="hero-title">
+    <div class="wrap">
+      <div class="hero-text">
+        <p class="eyebrow">In development</p>
+        <h1 id="hero-title">Data and AI, reasoned through.</h1>
+        <p class="lead">First steps with data and AI, for people and companies.</p>
+        <a class="button" href="#newsletter">Get the newsletter</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="ppt" aria-labelledby="ppt-title">
+    <div class="wrap">
+      <h2 id="ppt-title">People, process, technology.</h2>
+      <p>Every topic covers who decides, how work changes, and which tools fit.</p>
+      <p class="small muted">Written by practitioners in data and AI.</p>
+    </div>
+  </section>
+
+  <section aria-labelledby="for-title">
+    <div class="wrap">
+      <h2 id="for-title">Who it's for</h2>
+      <ul class="inline-list">
+        <li>Citizen developers</li>
+        <li>Technical users</li>
+        <li>Managers</li>
+        <li>Companies getting ready for AI</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="newsletter" class="newsletter" aria-labelledby="newsletter-title">
+    <div class="wrap">
+      <h2 id="newsletter-title">New articles by email.</h2>
+      <p>About once a month. Unsubscribe any time.</p>
+      <NewsletterForm />
+    </div>
+  </section>
+</Base>

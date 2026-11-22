@@ -1,0 +1,169 @@
+---
+import Base from '../layouts/Base.astro';
+import { site } from '../site.config';
+
+const { controllerName, contactEmail } = site;
+const known = controllerName !== '' && contactEmail !== '';
+const pending = 'Contact details will be added before sign-up opens.';
+// Sign-up is open only once a Buttondown username is set. See the checklist in src/site.config.ts first.
+const open = site.buttondownUsername !== '';
+const updated = { iso: '2026-11-22', text: '22 November 2026' };
+---
+
+<Base
+  title="Privacy — Manticwise"
+  description="What personal data the Manticwise website handles, and what happens to your email address if you subscribe."
+>
+  <section class="page-head">
+    <div class="wrap">
+      <p class="eyebrow">Privacy</p>
+      <h1>Privacy statement</h1>
+      <p class="lead">
+        {
+          open
+            ? 'This site sets no cookies and runs no trackers. The only personal data you give us is your email address, if you subscribe.'
+            : 'This site sets no cookies and runs no trackers. Newsletter sign-up is not open yet, so we collect no email addresses.'
+        }
+      </p>
+      <p class="small muted">Last updated: <time datetime={updated.iso}>{updated.text}</time></p>
+    </div>
+  </section>
+
+  <section class="page-body" aria-labelledby="short-title">
+    <div class="wrap">
+      <h2 id="short-title">The short version</h2>
+      <dl class="summary">
+        <dt>Who</dt>
+        <dd>
+          {
+            known ? (
+              <>
+                {controllerName}, trading as Manticwise, the Netherlands. Contact:{' '}
+                <a href={`mailto:${contactEmail}`}>{contactEmail}</a>
+              </>
+            ) : (
+              <>Manticwise, the Netherlands. {pending}</>
+            )
+          }
+        </dd>
+        {
+          open ? (
+            <>
+        <dt>What</dt>
+        <dd>Your email address, and when you subscribed and confirmed.</dd>
+        <dt>Why</dt>
+        <dd>To send you new articles and news about courses, about once a month. Nothing else.</dd>
+        <dt>Legal basis</dt>
+        <dd>Your consent, which you can withdraw any time.</dd>
+        <dt>Who else</dt>
+        <dd>Buttondown, the newsletter service, and GitHub, the website host. Both are based in the US.</dd>
+        <dt>How long</dt>
+        <dd>Until you unsubscribe.</dd>
+            </>
+          ) : (
+            <>
+        <dt>What</dt>
+        <dd>Nothing you type in: sign-up is not open yet. The host may log technical data such as your IP address.</dd>
+        <dt>Who else</dt>
+        <dd>GitHub, the website host, based in the US.</dd>
+        <dt>Newsletter</dt>
+        <dd>When sign-up opens, this page will say how your email address is handled, before you can subscribe.</dd>
+            </>
+          )
+        }
+        <dt>Your rights</dt>
+        <dd>Access, correction, deletion and more. See below.</dd>
+      </dl>
+
+      <h2 id="detail-title">The details</h2>
+
+      <details open>
+        <summary>Who is responsible</summary>
+        {
+          known ? (
+            <>
+              <p>The controller is {controllerName}, who runs Manticwise from the Netherlands.</p>
+              <p>
+                Contact: <a href={`mailto:${contactEmail}`}>{contactEmail}</a>
+              </p>
+            </>
+          ) : (
+            <p>Manticwise is run from the Netherlands. {pending}</p>
+          )
+        }
+      </details>
+
+      {
+        open && (
+          <>
+      <details>
+        <summary>What we collect and why</summary>
+        <p>
+          When you subscribe, we store your email address and the time you signed up and confirmed. We use it only to
+          send you new articles and news about courses, about once a month. We do not sell it, share it for marketing
+          or combine it with other data.
+        </p>
+        <p>Open and click tracking in the newsletter is switched off.</p>
+      </details>
+
+      <details>
+        <summary>Double opt-in</summary>
+        <p>
+          After you enter your address, you get one email asking you to confirm. You are only subscribed once you click
+          the link in it. If you do not confirm, no newsletter is sent.
+        </p>
+      </details>
+
+      <details>
+        <summary>Buttondown and transfer to the US</summary>
+        <p>
+          Buttondown stores the subscriber list and sends the emails for us. Buttondown is based in the United States,
+          so your address is processed outside the EU.
+        </p>
+      </details>
+
+      <details>
+        <summary>Unsubscribing</summary>
+        <p>
+          Every email has an unsubscribe link. One click and you are off the list. You can also ask by writing to the
+          contact address.
+        </p>
+      </details>
+
+      <details>
+        <summary>How long we keep it</summary>
+        <p>
+          We keep your address while you are subscribed. When you unsubscribe, it is removed from the mailing list.
+          Buttondown may keep a record of the unsubscribe so you are not added again by mistake.
+        </p>
+      </details>
+
+          </>
+        )
+      }
+
+      <details>
+        <summary>Your rights</summary>
+        <ul>
+          <li>See the data we hold about you, and get a copy.</li>
+          <li>Have it corrected or deleted.</li>
+          <li>Restrict or object to its use.</li>
+          <li>Withdraw your consent at any time. This does not affect anything sent before.</li>
+        </ul>
+        <p>
+          {known ? 'Write to the contact address; we answer within one month.' : pending} You can also complain to the
+          Dutch data protection authority, the Autoriteit Persoonsgegevens.
+        </p>
+      </details>
+
+      <details>
+        <summary>This website</summary>
+        <p>
+          The site is static. It sets no cookies, loads nothing from other sites and has no analytics. It is hosted on
+          GitHub Pages. GitHub is based in the United States and may log technical data, such as your IP address, when
+          you visit. See <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement" rel="noopener">GitHub's privacy statement</a>.
+        </p>
+      </details>
+    </div>
+  </section>
+</Base>
